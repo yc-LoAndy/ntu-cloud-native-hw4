@@ -1,0 +1,6 @@
+# Use a minimal base image
+FROM alpine:latest
+
+# Do nothing and exit
+CMD ["sh", "-c", "echo Hello from an empty container; sleep infinity"]
+
