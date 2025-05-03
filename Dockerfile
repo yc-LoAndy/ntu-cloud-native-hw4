@@ -7,7 +7,5 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Set working directory (optional)
 WORKDIR /app
 
-RUN echo "Fail this build" && exit 1
-
 # Start a shell when the container runs
 CMD ["sh", "-c", "echo Hello!; /bin/bash"]

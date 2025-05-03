@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - main
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'   # Triggers on semantic version tags like 1.2.3
   pull_request:
+  workflow_dispatch:             # Allows manual triggering
+
+env:
+  DOCKER_IMAGE_NAME: 2025cloud
 
 jobs:
   build:
@@ -23,10 +29,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USER }}/2025cloud:v1.0.0
+          tags: |
+            ${{ secrets.DOCKERHUB_USER }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }}
+            ${{ secrets.DOCKERHUB_USER }}/${{ env.DOCKER_IMAGE_NAME }}:latest
